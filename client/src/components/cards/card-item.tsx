@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, Edit } from "lucide-react";
+import { Eye, Edit, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import type { Card, UserCard } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -9,9 +9,10 @@ interface CardItemProps {
   userCard?: UserCard;
   onView?: (card: Card) => void;
   onEdit?: (card: Card) => void;
+  onDelete?: (card: Card) => void;
 }
 
-export function CardItem({ card, userCard, onView, onEdit }: CardItemProps) {
+export function CardItem({ card, userCard, onView, onEdit, onDelete }: CardItemProps) {
   const [imageError, setImageError] = useState(false);
 
   const getRarityColor = (rarity?: string) => {
@@ -33,11 +34,24 @@ export function CardItem({ card, userCard, onView, onEdit }: CardItemProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.2 }}
-      className="bg-white dark:bg-gray-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group"
+      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ 
+        y: -8, 
+        scale: 1.02,
+        rotateY: 5,
+        transition: { type: "spring", stiffness: 300, damping: 20 }
+      }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ 
+        duration: 0.4, 
+        ease: "easeOut",
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }}
+      className="bg-white dark:bg-gray-700 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group perspective-1000"
+      style={{ transformStyle: "preserve-3d" }}
     >
       <div className="relative">
         {!imageError && card.imageUrl ? (
@@ -53,28 +67,64 @@ export function CardItem({ card, userCard, onView, onEdit }: CardItemProps) {
           </div>
         )}
         
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex space-x-2">
+        <motion.div 
+          className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-500 flex items-center justify-center"
+          whileHover={{ backdropFilter: "blur(2px)" }}
+        >
+          <motion.div 
+            className="opacity-0 group-hover:opacity-100 transition-all duration-500 flex space-x-2"
+            initial={{ scale: 0.8, y: 10 }}
+            whileHover={{ scale: 1, y: 0 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
             {onView && (
-              <Button
-                size="icon"
-                className="bg-white text-gray-900 shadow-lg hover:bg-gray-100"
-                onClick={() => onView(card)}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
-                <Eye className="w-4 h-4" />
-              </Button>
+                <Button
+                  size="icon"
+                  className="bg-white text-gray-900 shadow-lg hover:bg-gray-100 hover:shadow-xl transition-all duration-300"
+                  onClick={() => onView(card)}
+                >
+                  <Eye className="w-4 h-4" />
+                </Button>
+              </motion.div>
             )}
             {onEdit && (
-              <Button
-                size="icon"
-                className="bg-white text-gray-900 shadow-lg hover:bg-gray-100"
-                onClick={() => onEdit(card)}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
               >
-                <Edit className="w-4 h-4" />
-              </Button>
+                <Button
+                  size="icon"
+                  className="bg-white text-gray-900 shadow-lg hover:bg-gray-100 hover:shadow-xl transition-all duration-300"
+                  onClick={() => onEdit(card)}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </motion.div>
             )}
-          </div>
-        </div>
+            {onDelete && (
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              >
+                <Button
+                  size="icon"
+                  variant="destructive"
+                  className="shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={() => onDelete(card)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </motion.div>
+            )}
+          </motion.div>
+        </motion.div>
 
         {card.rarity && (
           <span className={`absolute top-2 left-2 bg-gradient-to-r ${getRarityColor(card.rarity)} px-2 py-1 rounded-full text-xs font-bold`}>

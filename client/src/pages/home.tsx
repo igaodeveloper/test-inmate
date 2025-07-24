@@ -33,58 +33,183 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-gray-800 dark:to-gray-900 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-gradient-to-br from-primary/5 to-secondary/5 dark:from-gray-800 dark:to-gray-900 py-16 overflow-hidden">
+        {/* Animated Background Particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {Array.from({ length: 50 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-2 h-2 bg-primary/20 dark:bg-white/10 rounded-full"
+              initial={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                opacity: 0
+              }}
+              animate={{
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                opacity: [0, 0.5, 0]
+              }}
+              transition={{
+                duration: Math.random() * 10 + 10,
+                repeat: Infinity,
+                delay: Math.random() * 5
+              }}
+            />
+          ))}
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-              Trade Premium
-              <span className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                {" "}Collectible Cards
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Join the ultimate marketplace for trading card enthusiasts. Discover, collect, and trade rare cards with collectors worldwide.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-              {isAuthenticated ? (
-                <Button size="lg" className="transform hover:scale-105 transition-all duration-200 shadow-lg">
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Start Trading
-                </Button>
-              ) : (
-                <Button
-                  size="lg"
-                  onClick={() => setAuthModalOpen(true)}
-                  className="transform hover:scale-105 transition-all duration-200 shadow-lg"
-                >
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  Get Started
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="lg"
-                className="transform hover:scale-105 transition-all duration-200"
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6 relative"
+            >
+              <motion.span
+                initial={{ rotateX: 90, opacity: 0 }}
+                animate={{ rotateX: 0, opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.8, type: "spring", stiffness: 200 }}
+                className="inline-block"
               >
-                Browse Cards
-              </Button>
-            </div>
+                Trade Premium
+              </motion.span>
+              <motion.span 
+                initial={{ opacity: 0, scale: 0.8, rotateY: 180 }}
+                animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+                transition={{ delay: 0.7, duration: 0.8, type: "spring", stiffness: 200 }}
+                className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent inline-block"
+                whileHover={{ 
+                  scale: 1.05,
+                  textShadow: "0px 0px 8px rgba(79, 70, 229, 0.8)",
+                  transition: { duration: 0.3 }
+                }}
+              >
+                {" "}Collectible Cards
+              </motion.span>
+              {/* Sparkle Effects */}
+              <motion.div
+                className="absolute -top-4 -right-4"
+                animate={{ 
+                  rotate: 360,
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{ 
+                  rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+                  scale: { duration: 2, repeat: Infinity }
+                }}
+              >
+                <Sparkles className="w-8 h-8 text-primary/70" />
+              </motion.div>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto"
+            >
+              Join the ultimate marketplace for trading card enthusiasts. Discover, collect, and trade rare cards with collectors worldwide.
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4"
+            >
+              {isAuthenticated ? (
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <motion.div
+                      whileHover={{ rotate: 180 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Sparkles className="w-5 h-5 mr-2" />
+                    </motion.div>
+                    Start Trading
+                  </Button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                >
+                  <Button
+                    size="lg"
+                    onClick={() => setAuthModalOpen(true)}
+                    className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  >
+                    <motion.div
+                      whileHover={{ rotate: 180 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Sparkles className="w-5 h-5 mr-2" />
+                    </motion.div>
+                    Get Started
+                  </Button>
+                </motion.div>
+              )}
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              >
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-2 hover:bg-primary/5 hover:border-primary transition-all duration-300"
+                >
+                  Browse Cards
+                </Button>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 bg-white dark:bg-gray-800 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5 dark:opacity-10">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 transform rotate-12 scale-150"></div>
+        </div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Join the Community
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Connect with thousands of collectors and traders worldwide
+            </p>
+          </motion.div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ 
+                y: -10,
+                scale: 1.05,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
               transition={{ delay: 0.1 }}
               className="text-center"
             >
@@ -92,30 +217,66 @@ export default function Home() {
               <div className="text-gray-600 dark:text-gray-400">Active Cards</div>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ 
+                y: -10,
+                scale: 1.05,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
               transition={{ delay: 0.2 }}
               className="text-center"
             >
-              <div className="text-3xl font-bold text-primary">12k+</div>
+              <motion.div 
+                className="text-3xl font-bold text-primary"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                12k+
+              </motion.div>
               <div className="text-gray-600 dark:text-gray-400">Traders</div>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ 
+                y: -10,
+                scale: 1.05,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
               transition={{ delay: 0.3 }}
               className="text-center"
             >
-              <div className="text-3xl font-bold text-primary">89%</div>
+              <motion.div 
+                className="text-3xl font-bold text-primary"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                89%
+              </motion.div>
               <div className="text-gray-600 dark:text-gray-400">Success Rate</div>
             </motion.div>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              whileHover={{ 
+                y: -10,
+                scale: 1.05,
+                transition: { type: "spring", stiffness: 300, damping: 20 }
+              }}
               transition={{ delay: 0.4 }}
               className="text-center"
             >
-              <div className="text-3xl font-bold text-primary">24/7</div>
+              <motion.div 
+                className="text-3xl font-bold text-primary"
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 400 }}
+              >
+                24/7
+              </motion.div>
               <div className="text-gray-600 dark:text-gray-400">Support</div>
             </motion.div>
           </div>

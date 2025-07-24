@@ -40,43 +40,82 @@ export default function Marketplace() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="mb-8 text-center"
         >
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Marketplace</h1>
-          <p className="text-gray-600 dark:text-gray-300">Browse all available trades</p>
+          <motion.h1 
+            className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+          >
+            Trading 
+            <motion.span
+              className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent ml-3"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              Marketplace
+            </motion.span>
+          </motion.h1>
+          <motion.p 
+            className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            Discover and trade premium collectible cards with collectors worldwide
+          </motion.p>
         </motion.div>
 
         {/* Filters */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8"
+          transition={{ delay: 0.5, duration: 0.6 }}
+          className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 mb-8"
         >
-          <div className="flex-1">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                placeholder="Search trades..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+            <motion.div 
+              className="flex-1"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="relative">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                </motion.div>
+                <Input
+                  placeholder="Search trades..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 border-2 hover:border-primary/30 focus:border-primary transition-colors duration-300"
+                />
+              </div>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-full md:w-48 border-2 hover:border-primary/30 focus:border-primary transition-colors duration-300">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest First</SelectItem>
+                  <SelectItem value="oldest">Oldest First</SelectItem>
+                  <SelectItem value="most-cards">Most Cards</SelectItem>
+                  <SelectItem value="least-cards">Least Cards</SelectItem>
+                </SelectContent>
+              </Select>
+            </motion.div>
           </div>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-full md:w-48">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="oldest">Oldest First</SelectItem>
-              <SelectItem value="most-cards">Most Cards</SelectItem>
-              <SelectItem value="least-cards">Least Cards</SelectItem>
-            </SelectContent>
-          </Select>
         </motion.div>
 
         {/* Trades Grid */}
