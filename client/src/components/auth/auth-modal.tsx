@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
 
@@ -16,6 +16,13 @@ export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalP
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
+        <DialogTitle className="sr-only">
+          {mode === "login" ? "Sign In" : "Create Account"}
+        </DialogTitle>
+        <DialogDescription className="sr-only">
+          {mode === "login" ? "Sign in to your CardEx account" : "Create a new CardEx account"}
+        </DialogDescription>
+        
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
