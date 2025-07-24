@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { TradeCard } from "./trade-card";
 import { TradeSkeleton } from "@/components/ui/loading-skeleton";
 import type { TradeWithCards } from "@/types";
@@ -16,8 +17,13 @@ export function TradesGrid({
   isLoading = false,
   onViewTrade,
   onDeleteTrade,
-  emptyMessage = "No trades found",
+  emptyMessage,
 }: TradesGridProps) {
+  const { t } = useTranslation();
+  
+  // Usa a mensagem fornecida ou a tradução padrão
+  const defaultEmptyMessage = t('trades.noTradesDefault');
+  const displayMessage = emptyMessage || defaultEmptyMessage;
   if (isLoading) {
     return (
       <motion.div 
@@ -54,7 +60,7 @@ export function TradesGrid({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
-          {emptyMessage}
+          {displayMessage}
         </motion.p>
       </motion.div>
     );

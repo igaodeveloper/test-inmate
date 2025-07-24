@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/use-auth";
 import { registerSchema, type RegisterData } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ interface RegisterFormProps {
 
 export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
   const { register: registerUser, isLoading } = useAuth();
+  const { t } = useTranslation();
   
   const {
     register,
@@ -30,8 +32,8 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
     try {
       await registerUser(data);
       toast({
-        title: "Welcome to CardEx!",
-        description: "Your account has been created successfully.",
+        title: t('auth.welcomeToCardEx'),
+        description: t('auth.registrationSuccess'),
       });
       onClose();
     } catch (error) {
@@ -45,17 +47,17 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
         <div className="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4">
           <Sparkles className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Create Account</h2>
-        <p className="text-gray-600 dark:text-gray-300">Join the CardEx community</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('auth.createAccount')}</h2>
+        <p className="text-gray-600 dark:text-gray-300">{t('auth.joinCommunity')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
         <div>
-          <Label htmlFor="username">Username</Label>
+          <Label htmlFor="username">{t('auth.username')}</Label>
           <Input
             id="username"
             type="text"
-            placeholder="johndoe"
+            placeholder={t('auth.usernamePlaceholder')}
             {...register("username")}
             className={errors.username ? "border-red-500" : ""}
           />
@@ -65,13 +67,12 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('auth.email')}</Label>
           <Input
             id="email"
             type="email"
-            placeholder="your@email.com"
+            placeholder={t('auth.emailPlaceholder')}
             {...register("email")}
-            className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
@@ -79,13 +80,12 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
         </div>
 
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t('auth.password')}</Label>
           <Input
             id="password"
             type="password"
             placeholder="••••••••"
             {...register("password")}
-            className={errors.password ? "border-red-500" : ""}
           />
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
@@ -95,10 +95,13 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
         <div className="flex items-center space-x-2">
           <Checkbox id="terms" required />
           <Label htmlFor="terms" className="text-sm">
-            I agree to the{" "}
-            <button type="button" className="text-primary hover:underline">
-              Terms of Service
-            </button>
+            {t('auth.agreeTo')}{" "}
+            <a href="#" className="text-primary hover:underline">
+              {t('auth.termsOfService')}
+            </a>{" "}{t('common.and')}{" "}
+            <a href="#" className="text-primary hover:underline">
+              {t('auth.privacyPolicy')}
+            </a>
           </Label>
         </div>
 
@@ -107,18 +110,20 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
           className="w-full"
           disabled={isLoading}
         >
-          {isLoading ? <LoadingSpinner size="sm" /> : "Create Account"}
+          {isLoading ? <LoadingSpinner size="sm" /> : t('auth.createAccount')}
         </Button>
 
         <div className="text-center">
-          <span className="text-gray-600 dark:text-gray-300">Already have an account? </span>
-          <button
-            type="button"
-            onClick={onSwitchToLogin}
-            className="text-primary hover:underline"
-          >
-            Sign in
-          </button>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {t('auth.haveAccount')}{" "}
+            <button
+              type="button"
+              onClick={onSwitchToLogin}
+              className="font-medium text-primary hover:underline"
+            >
+              {t('auth.login')}
+            </button>
+          </p>
         </div>
       </form>
     </div>

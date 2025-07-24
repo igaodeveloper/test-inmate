@@ -1,11 +1,18 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Moon, Sun, Sparkles, User, Menu, X } from "lucide-react";
+import { Moon, Sun, Sparkles, User, Menu, X, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "@/hooks/useTranslation";
 import { useAuth } from "@/hooks/use-auth";
 import { useThemeStore } from "@/store/theme";
 import { Button } from "@/components/ui/button";
 import { AuthModal } from "@/components/auth/auth-modal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function Navbar() {
   const [location] = useLocation();
@@ -13,11 +20,17 @@ export function Navbar() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { isAuthenticated, user, logout } = useAuth();
   const { isDark, toggleTheme } = useThemeStore();
+  const { t, changeLanguage, currentLanguage } = useTranslation();
 
   const navigation = [
-    { name: "Marketplace", href: "/", active: location === "/" },
-    { name: "My Cards", href: "/my-cards", active: location === "/my-cards" },
-    { name: "My Trades", href: "/my-trades", active: location === "/my-trades" },
+    { name: t('navbar.marketplace'), href: "/", active: location === "/" },
+    { name: t('navbar.myCards'), href: "/my-cards", active: location === "/my-cards" },
+    { name: t('navbar.myTrades'), href: "/my-trades", active: location === "/my-trades" },
+  ];
+  
+  const languages = [
+    { code: 'pt-BR', name: 'Português (BR)' },
+    { code: 'en', name: 'English' },
   ];
 
   return (
@@ -82,38 +95,59 @@ export function Navbar() {
               transition={{ delay: 0.3, duration: 0.4 }}
               className="flex items-center space-x-4"
             >
-              {/* Dark Mode Toggle */}
+              {/* Language Toggle */}
               <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleTheme}
-                  className="rounded-lg relative overflow-hidden"
-                >
-                  <AnimatePresence mode="wait">
-                    {isDark ? (
-                      <motion.div
-                        key="sun"
-                        initial={{ rotate: -90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: 90, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Sun className="w-5 h-5" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="moon"
-                        initial={{ rotate: 90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: -90, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Moon className="w-5 h-5" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </Button>
+                <div className="flex items-center space-x-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <Globe className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      {languages.map((lang) => (
+                        <DropdownMenuItem 
+                          key={lang.code} 
+                          onClick={() => changeLanguage(lang.code)}
+                          className={currentLanguage === lang.code ? 'bg-gray-100 dark:bg-gray-700' : ''}
+                        >
+                          {lang.name}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  {/* Dark Mode Toggle */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleTheme}
+                    className="text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    <AnimatePresence mode="wait">
+                      {isDark ? (
+                        <motion.div
+                          key="sun"
+                          initial={{ rotate: -90, opacity: 0 }}
+                          animate={{ rotate: 0, opacity: 1 }}
+                          exit={{ rotate: 90, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Sun className="h-5 w-5" />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="moon"
+                          initial={{ rotate: 90, opacity: 0 }}
+                          animate={{ rotate: 0, opacity: 1 }}
+                          exit={{ rotate: -90, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <Moon className="w-5 h-5" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </Button>
+                </div>
               </motion.div>
 
               {/* User Menu */}

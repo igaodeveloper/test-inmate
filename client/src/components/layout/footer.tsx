@@ -1,6 +1,8 @@
 import { Sparkles, Twitter, Facebook, Instagram } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="bg-gray-900 dark:bg-gray-950 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,7 +16,7 @@ export function Footer() {
               <span className="text-xl font-bold">CardEx</span>
             </div>
             <p className="text-gray-400 mb-4">
-              The premier marketplace for trading card enthusiasts. Connect, collect, and trade with confidence.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
@@ -31,29 +33,31 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Browse Cards</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Active Trades</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">My Collection</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Trade History</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.browseCards')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.activeTrades')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.myCollection')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.tradeHistory')}</a></li>
             </ul>
           </div>
 
           {/* Support */}
           <div>
-            <h3 className="font-semibold mb-4">Support</h3>
+            <h3 className="font-semibold mb-4">{t('footer.support')}</h3>
             <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Trading Guidelines</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Safety Tips</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.helpCenter')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.tradingGuidelines')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.safetyTips')}</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">{t('footer.contactUs')}</a></li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 pt-8 mt-8 text-center text-gray-400">
-          <p>&copy; 2024 CardEx. All rights reserved. Built with ❤️ for collectors.</p>
+        <div className="pt-8 mt-8 border-t border-gray-800">
+          <p className="text-center text-gray-400 text-sm">
+            &copy; {new Date().getFullYear()} CardEx. {t('footer.rightsReserved')} Built with ❤️ for collectors.
+          </p>
         </div>
       </div>
     </footer>

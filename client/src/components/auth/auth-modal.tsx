@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { LoginForm } from "./login-form";
 import { RegisterForm } from "./register-form";
@@ -12,15 +13,16 @@ interface AuthModalProps {
 
 export function AuthModal({ isOpen, onClose, initialMode = "login" }: AuthModalProps) {
   const [mode, setMode] = useState<"login" | "register">(initialMode);
+  const { t } = useTranslation();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
         <DialogTitle className="sr-only">
-          {mode === "login" ? "Sign In" : "Create Account"}
+          {mode === "login" ? t('auth.login') : t('auth.register')}
         </DialogTitle>
         <DialogDescription className="sr-only">
-          {mode === "login" ? "Sign in to your CardEx account" : "Create a new CardEx account"}
+          {mode === "login" ? t('auth.loginDescription') : t('auth.registerDescription')}
         </DialogDescription>
         
         <button

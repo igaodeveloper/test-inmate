@@ -1,6 +1,7 @@
 import { Sparkles } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/use-auth";
 import { loginSchema, type LoginData } from "@/types";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ interface LoginFormProps {
 
 export function LoginForm({ onClose, onSwitchToRegister }: LoginFormProps) {
   const { login, isLoading } = useAuth();
+  const { t } = useTranslation();
   
   const {
     register,
@@ -30,8 +32,8 @@ export function LoginForm({ onClose, onSwitchToRegister }: LoginFormProps) {
     try {
       await login(data);
       toast({
-        title: "Welcome back!",
-        description: "You have been successfully logged in.",
+        title: t('auth.welcomeBack'),
+        description: t('auth.loginSuccess'),
       });
       onClose();
     } catch (error) {
@@ -45,27 +47,26 @@ export function LoginForm({ onClose, onSwitchToRegister }: LoginFormProps) {
         <div className="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4">
           <Sparkles className="w-8 h-8 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Welcome Back</h2>
-        <p className="text-gray-600 dark:text-gray-300">Sign in to your CardEx account</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('auth.welcomeBack')}</h2>
+        <p className="text-gray-600 dark:text-gray-300">{t('auth.loginDescription')}</p>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t('auth.email')}</Label>
           <Input
             id="email"
             type="email"
-            placeholder="your@email.com"
+            placeholder={t('auth.emailPlaceholder')}
             {...register("email")}
-            className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+            <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
           )}
         </div>
 
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t('auth.password')}</Label>
           <Input
             id="password"
             type="password"
@@ -81,14 +82,17 @@ export function LoginForm({ onClose, onSwitchToRegister }: LoginFormProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Checkbox id="remember" />
-            <Label htmlFor="remember" className="text-sm">Remember me</Label>
+            <Label htmlFor="remember" className="text-sm">{t('auth.rememberMe')}</Label>
           </div>
-          <button
-            type="button"
-            className="text-sm text-primary hover:underline"
-          >
-            Forgot password?
-          </button>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">{t('auth.password')}</Label>
+            <button
+              type="button"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              {t('auth.forgotPassword')}
+            </button>
+          </div>
         </div>
 
         <Button
@@ -96,17 +100,17 @@ export function LoginForm({ onClose, onSwitchToRegister }: LoginFormProps) {
           className="w-full"
           disabled={isLoading}
         >
-          {isLoading ? <LoadingSpinner size="sm" /> : "Sign In"}
+          {isLoading ? <LoadingSpinner size="sm" /> : t('auth.login')}
         </Button>
 
         <div className="text-center">
-          <span className="text-gray-600 dark:text-gray-300">Don't have an account? </span>
+          <span className="text-gray-600 dark:text-gray-300">{t('auth.dontHaveAccount')} </span>
           <button
             type="button"
             onClick={onSwitchToRegister}
             className="text-primary hover:underline"
           >
-            Sign up
+            {t('auth.signUp')}
           </button>
         </div>
       </form>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { TradesGrid } from "@/components/trades/trades-grid";
 import { Pagination } from "@/components/common/pagination";
@@ -16,6 +17,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const { isAuthenticated } = useAuth();
   const { pagination } = useTradesStore();
+  const { t } = useTranslation();
 
   const { data: tradesData, isLoading } = useQuery({
     queryKey: ["/trades", currentPage],
@@ -135,7 +137,7 @@ export default function Home() {
                     >
                       <Sparkles className="w-5 h-5 mr-2" />
                     </motion.div>
-                    Start Trading
+                    {t('navbar.myTrades')}
                   </Button>
                 </motion.div>
               ) : (
@@ -155,7 +157,7 @@ export default function Home() {
                     >
                       <Sparkles className="w-5 h-5 mr-2" />
                     </motion.div>
-                    Get Started
+                    {t('common.getStarted')}
                   </Button>
                 </motion.div>
               )}
@@ -169,7 +171,7 @@ export default function Home() {
                   size="lg"
                   className="border-2 hover:bg-primary/5 hover:border-primary transition-all duration-300"
                 >
-                  Browse Cards
+                  {t('home.browseCards')}
                 </Button>
               </motion.div>
             </motion.div>
@@ -193,10 +195,10 @@ export default function Home() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-              Join the Community
+              {t('home.joinCommunity')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Connect with thousands of collectors and traders worldwide
+              {t('home.communityDescription')}
             </p>
           </motion.div>
           
@@ -214,7 +216,7 @@ export default function Home() {
               className="text-center"
             >
               <div className="text-3xl font-bold text-primary">50k+</div>
-              <div className="text-gray-600 dark:text-gray-400">Active Cards</div>
+              <div className="text-gray-600 dark:text-gray-400">{t('home.activeCards')}</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -235,7 +237,7 @@ export default function Home() {
               >
                 12k+
               </motion.div>
-              <div className="text-gray-600 dark:text-gray-400">Traders</div>
+              <div className="text-gray-600 dark:text-gray-400">{t('home.traders')}</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -256,7 +258,7 @@ export default function Home() {
               >
                 89%
               </motion.div>
-              <div className="text-gray-600 dark:text-gray-400">Success Rate</div>
+              <div className="text-gray-600 dark:text-gray-400">{t('home.successRate')}</div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
@@ -277,7 +279,7 @@ export default function Home() {
               >
                 24/7
               </motion.div>
-              <div className="text-gray-600 dark:text-gray-400">Support</div>
+              <div className="text-gray-600 dark:text-gray-400">{t('home.support')}</div>
             </motion.div>
           </div>
         </div>
@@ -292,14 +294,14 @@ export default function Home() {
             transition={{ delay: 0.2 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Trades</h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Discover the hottest trades happening now</p>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('home.featuredTrades')}</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300">{t('home.featuredTradesDescription')}</p>
           </motion.div>
 
           <TradesGrid
             trades={trades}
             isLoading={isLoading}
-            emptyMessage="No active trades at the moment. Be the first to create one!"
+            emptyMessage={t('home.noTradesMessage')}
           />
 
           {meta.totalPages > 1 && (
