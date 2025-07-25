@@ -14,6 +14,7 @@ import Home from "@/pages/home";
 import Marketplace from "@/pages/marketplace";
 import MyCards from "@/pages/my-cards";
 import MyTrades from "@/pages/my-trades";
+import Cards from "@/pages/cards";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/marketplace" component={Marketplace} />
+      <Route path="/cards" component={Cards} />
       <Route path="/my-cards" component={MyCards} />
       <Route path="/my-trades" component={MyTrades} />
       <Route component={NotFound} />

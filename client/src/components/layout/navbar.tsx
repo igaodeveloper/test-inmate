@@ -24,6 +24,7 @@ export function Navbar() {
 
   const navigation = [
     { name: t('navbar.marketplace'), href: "/", active: location === "/" },
+    { name: 'Cards', href: "/cards", active: location === "/cards" },
     { name: t('navbar.myCards'), href: "/my-cards", active: location === "/my-cards" },
     { name: t('navbar.myTrades'), href: "/my-trades", active: location === "/my-trades" },
   ];
