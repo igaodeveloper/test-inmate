@@ -73,7 +73,11 @@ export function CardsList({ userId, onCardClick, showAddButton = false }: CardsL
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {data.data.map((card) => (
+        {data.data.map((card) => ({
+          ...card,
+          imageUrl: card.imageUrl ?? null,
+          createdAt: new Date(card.createdAt)
+        })).map((card) => (
           <Card 
             key={card.id} 
             card={card} 

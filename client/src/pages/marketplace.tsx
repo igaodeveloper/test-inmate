@@ -51,14 +51,14 @@ export default function Marketplace() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Trading 
+            Troca de 
             <motion.span
               className="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent ml-3"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
             >
-              Marketplace
+              Cartas
             </motion.span>
           </motion.h1>
           <motion.p 
@@ -67,7 +67,7 @@ export default function Marketplace() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
           >
-            Discover and trade premium collectible cards with collectors worldwide
+            Descubra e troque cartas colecionáveis premium com colecionadores do mundo todo
           </motion.p>
         </motion.div>
 
@@ -92,7 +92,7 @@ export default function Marketplace() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 </motion.div>
                 <Input
-                  placeholder="Search trades..."
+                  placeholder="Pesquisar trocas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 border-2 hover:border-primary/30 focus:border-primary transition-colors duration-300"
@@ -108,10 +108,10 @@ export default function Marketplace() {
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="most-cards">Most Cards</SelectItem>
-                  <SelectItem value="least-cards">Least Cards</SelectItem>
+                  <SelectItem value="newest">Mais Recentes</SelectItem>
+                  <SelectItem value="oldest">Mais Antigas</SelectItem>
+                  <SelectItem value="most-cards">Mais Cartas</SelectItem>
+                  <SelectItem value="least-cards">Menos Cartas</SelectItem>
                 </SelectContent>
               </Select>
             </motion.div>
@@ -127,7 +127,7 @@ export default function Marketplace() {
           <TradesGrid
             trades={trades}
             isLoading={isLoading}
-            emptyMessage={searchQuery ? "No trades found matching your search." : "No trades available."}
+            emptyMessage={searchQuery ? "Nenhuma troca encontrada com sua busca." : "Nenhuma troca disponível no momento."}
           />
         </motion.div>
 
