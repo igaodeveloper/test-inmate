@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { api } from '@/lib/axios';
-import type { User, LoginData, RegisterData, AuthResponse } from '@/types';
+import { api } from '@/services/api';
+import { authService, type User } from '@/services/auth';
 
 interface AuthState {
   user: User | null;
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (data: LoginData) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  login: (data: { email: string; password: string }) => Promise<void>;
+  register: (data: { name: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
   checkAuth: () => Promise<void>;
 }
@@ -22,11 +22,10 @@ export const useAuthStore = create<AuthState>()(
       isLoading: false,
       isAuthenticated: false,
 
-      login: async (data: LoginData) => {
+      login: async (data) => {
         set({ isLoading: true });
         try {
-          const response = await api.post<AuthResponse>('/login', data);
-          const { user, token } = response.data;
+          const { user, token } = await authService.login(data);
           
           set({
             user,
@@ -40,11 +39,14 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      register: async (data: RegisterData) => {
+      register: async (data) => {
         set({ isLoading: true });
         try {
-          const response = await api.post<AuthResponse>('/register', data);
-          const { user, token } = response.data;
+          await authService.register(data);
+          const { user, token } = await authService.login({
+            email: data.email,
+            password: data.password,
+          });
           
           set({
             user,
@@ -59,6 +61,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        authService.logout();
         set({
           user: null,
           token: null,
@@ -69,16 +72,19 @@ export const useAuthStore = create<AuthState>()(
 
       checkAuth: async () => {
         const { token } = get();
-        if (!token) return;
+        if (!token) {
+          set({ isAuthenticated: false });
+          return;
+        }
 
+        set({ isLoading: true });
         try {
-          const response = await api.get<User>('/me');
-          set({
-            user: response.data,
-            isAuthenticated: true,
-          });
+          const user = await authService.getMe();
+          set({ user, isAuthenticated: true });
         } catch (error) {
-          get().logout();
+          set({ isAuthenticated: false, token: null, user: null });
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),

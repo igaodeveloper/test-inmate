@@ -1,30 +1,65 @@
-import { Card as CardType } from '@/types';
+import React from 'react';
+import { Card as CardType } from '@/services/cards';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Eye, Plus } from 'lucide-react';
+
+// Define button props to extend
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'link';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  className?: string;
+  children?: React.ReactNode;
+}
 
 interface CardProps {
   card: CardType;
-  onView?: (cardId: number) => void;
-  onAdd?: (cardId: number) => void;
+  onView?: (cardId: string) => void;
+  onAdd?: (cardId: string) => void;
+  showActions?: boolean;
+  className?: string;
 }
 
-export function Card({ card, onView, onAdd }: CardProps) {
-  const getRarityColor = (rarity: string) => {
-    switch (rarity.toLowerCase()) {
-      case 'common':
-        return 'bg-gray-200 text-gray-800';
-      case 'uncommon':
-        return 'bg-green-100 text-green-800';
-      case 'rare':
-        return 'bg-blue-100 text-blue-800';
-      case 'mythic':
-        return 'bg-purple-100 text-purple-800';
-      case 'legendary':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+// Create a custom button component with proper types
+const CustomButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = 'default', size = 'default', className = '', children, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={`inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background ${
+          variant === 'default' ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''
+        } ${
+          variant === 'secondary' ? 'bg-secondary text-secondary-foreground hover:bg-secondary/80' : ''
+        } ${
+          variant === 'outline' ? 'border border-input hover:bg-accent hover:text-accent-foreground' : ''
+        } ${
+          variant === 'ghost' ? 'hover:bg-accent hover:text-accent-foreground' : ''
+        } ${
+          variant === 'link' ? 'text-primary underline-offset-4 hover:underline' : ''
+        } ${
+          size === 'default' ? 'h-10 py-2 px-4' : ''
+        } ${
+          size === 'sm' ? 'h-9 px-3 rounded-md' : ''
+        } ${
+          size === 'lg' ? 'h-11 px-8 rounded-md' : ''
+        } ${
+          size === 'icon' ? 'h-10 w-10' : ''
+        } ${className}`}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  }
+);
+CustomButton.displayName = 'Button';
+
+export function Card({ card, onView, onAdd, showActions = true, className = '' }: CardProps) {
+  const handleView = () => {
+    if (onView) onView(card.id);
+  };
+
+  const handleAdd = () => {
+    if (onAdd) onAdd(card.id);
   };
 
   return (
@@ -44,54 +79,44 @@ export function Card({ card, onView, onAdd }: CardProps) {
         )}
         
         {/* Card Actions */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
-          {onView && (
-            <Button 
-              variant="secondary" 
-              size="icon"
-              onClick={() => onView(card.id)}
-              className="rounded-full w-10 h-10"
-            >
-              <Eye className="h-4 w-4" />
-            </Button>
-          )}
-          {onAdd && (
-            <Button 
-              variant="default" 
-              size="icon"
-              onClick={() => onAdd(card.id)}
-              className="rounded-full w-10 h-10"
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Card Content */}
-      <div className="p-4">
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="font-semibold text-lg line-clamp-1">{card.name}</h3>
-          {card.rarity && (
-            <Badge className={`text-xs ${getRarityColor(card.rarity)}`}>
-              {card.rarity}
-            </Badge>
-          )}
-        </div>
-        
-        {card.description && (
-          <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-3">
-            {card.description}
-          </p>
-        )}
-        
-        {card.category && (
-          <div className="mt-2">
-            <span className="inline-block bg-gray-100 dark:bg-gray-700 text-xs px-2 py-1 rounded-full">
-              {card.category}
-            </span>
+        {showActions && (
+          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
+            {onView && (
+              <CustomButton 
+                variant="secondary" 
+                size="icon"
+                onClick={handleView}
+                className="rounded-full bg-white/90 hover:bg-white"
+                aria-label="View card details"
+              >
+                <Eye className="w-4 h-4" />
+              </CustomButton>
+            )}
+            {onAdd && (
+              <CustomButton 
+                variant="default" 
+                size="icon"
+                onClick={handleAdd}
+                className="rounded-full"
+                aria-label="Add to collection"
+              >
+                <Plus className="w-4 h-4" />
+              </CustomButton>
+            )}
           </div>
         )}
+      </div>
+
+      {/* Card Info */}
+      <div className="p-4">
+        <div className="flex items-start justify-between">
+          <h3 className="font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
+            {card.name}
+          </h3>
+        </div>
+        <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 line-clamp-3">
+          {card.description}
+        </p>
       </div>
     </div>
   );

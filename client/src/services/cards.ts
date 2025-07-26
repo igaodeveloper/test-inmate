@@ -1,55 +1,98 @@
 import { api } from './api';
 
+// Define the Card interface based on the API response
 export interface Card {
-  id: number;
+  id: string;
   name: string;
   description: string;
-  imageUrl?: string;
-  rarity: string;
-  category: string;
+  imageUrl: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
-interface PaginatedResponse<T> {
+// Define the paginated response type
+export interface PaginatedResponse<T> {
   data: T[];
   meta: {
-    page: number;
-    rpp: number;
     total: number;
+    page: number;
+    limit: number;
     totalPages: number;
   };
 }
 
-export const cardsService = {
-  async getAll(page: number = 1, rpp: number = 10, search?: string) {
-    const response = await api.get<PaginatedResponse<Card>>('/cards', {
-      params: { page, rpp, search },
-    });
-    return response.data;
+// Define the cards service with proper typing
+export const cardService = {
+  /**
+   * Fetch all cards with pagination
+   */
+  async getCards(params?: { 
+    page?: number;
+    limit?: number;
+    search?: string;
+  }): Promise<PaginatedResponse<Card>> {
+    try {
+      const response = await api.get<PaginatedResponse<Card>>('/cards', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch cards:', error);
+      throw error;
+    }
   },
 
-  async getById(id: number): Promise<Card> {
-    const response = await api.get<Card>(`/cards/${id}`);
-    return response.data;
+  /**
+   * Fetch a single card by ID
+   */
+  async getCardById(id: string): Promise<Card> {
+    try {
+      const response = await api.get<{ data: Card }>(`/cards/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.error(`Failed to fetch card ${id}:`, error);
+      throw error;
+    }
   },
 
-  async getUserCards(page: number = 1, rpp: number = 10) {
-    const response = await api.get<PaginatedResponse<Card>>('/me/cards', {
-      params: { page, rpp },
-    });
-    return response.data;
+  /**
+   * Fetch cards in the user's collection
+   */
+  async getUserCards(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<PaginatedResponse<Card>> {
+    try {
+      const response = await api.get<PaginatedResponse<Card>>('/me/cards', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch user cards:', error);
+      throw error;
+    }
   },
 
-  async addCardToUser(cardId: number, condition?: string) {
-    const response = await api.post('/me/cards', { cardId, condition });
-    return response.data;
+  /**
+   * Add cards to user's collection
+   */
+  async addCardsToUser(cardIds: string[]): Promise<void> {
+    try {
+      await api.post('/me/cards', { cardIds });
+    } catch (error) {
+      console.error('Failed to add cards to collection:', error);
+      throw error;
+    }
   },
 
-  async searchCards(query: string, page: number = 1, rpp: number = 10) {
-    const response = await api.get<PaginatedResponse<Card>>('/cards', {
-      params: { search: query, page, rpp },
-    });
-    return response.data;
+  /**
+   * Search for cards
+   */
+  async searchCards(query: string, page: number = 1, limit: number = 10): Promise<PaginatedResponse<Card>> {
+    try {
+      const response = await api.get<PaginatedResponse<Card>>('/cards/search', {
+        params: { q: query, page, limit },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Failed to search cards:', error);
+      throw error;
+    }
   },
-};
+} as const;

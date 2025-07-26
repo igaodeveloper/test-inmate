@@ -1,98 +1,68 @@
 import { motion } from "framer-motion";
-import { CardItem } from "./card-item";
-import { CardSkeleton } from "@/components/ui/loading-skeleton";
-import type { Card, UserCard } from "@/types";
+import React from 'react';
+import { Card } from './card';
+import { Skeleton } from '@/components/ui/skeleton';
+import type { Card as CardType } from '@/services/cards';
 
+// Define the props interface for the CardsGrid component
 interface CardsGridProps {
-  cards: Card[];
-  userCards?: UserCard[];
+  cards: CardType[];
   isLoading?: boolean;
-  onViewCard?: (card: Card) => void;
-  onEditCard?: (card: Card) => void;
+  onViewCard?: (cardId: string) => void;
+  onAddCard?: (cardId: string) => void;
   emptyMessage?: string;
+  showActions?: boolean;
 }
 
+/**
+ * A responsive grid layout for displaying trading cards
+ */
 export function CardsGrid({
-  cards,
-  userCards = [],
+  cards = [],
   isLoading = false,
   onViewCard,
-  onEditCard,
-  emptyMessage = "No cards found",
+  onAddCard,
+  emptyMessage = 'No cards found',
+  showActions = true,
 }: CardsGridProps) {
+  // Show loading skeleton when data is being fetched
   if (isLoading) {
     return (
-      <motion.div 
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        {Array.from({ length: 10 }).map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05, duration: 0.4 }}
-          >
-            <CardSkeleton />
-          </motion.div>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {Array.from({ length: 8 }).map((_, index) => (
+          <div key={`skeleton-${index}`} className="space-y-2">
+            <Skeleton className="w-full h-48 rounded-lg" />
+            <Skeleton className="w-3/4 h-4" />
+            <Skeleton className="w-1/2 h-4" />
+          </div>
         ))}
-      </motion.div>
+      </div>
     );
   }
 
-  if (cards.length === 0) {
+  // Show empty state when no cards are available
+  if (!cards.length) {
     return (
-      <motion.div 
-        className="text-center py-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <motion.p 
-          className="text-gray-500 dark:text-gray-400 text-lg"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-        >
+      <div className="py-12 text-center">
+        <p className="text-gray-500 dark:text-gray-400">
           {emptyMessage}
-        </motion.p>
-      </motion.div>
+        </p>
+      </div>
     );
   }
 
   return (
-    <motion.div 
-      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-    >
-      {cards.map((card, index) => {
-        const userCard = userCards.find(uc => uc.cardId === card.id);
-        return (
-          <motion.div
-            key={card.id}
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ 
-              delay: index * 0.05, 
-              duration: 0.5,
-              type: "spring",
-              stiffness: 260,
-              damping: 20
-            }}
-          >
-            <CardItem
-              card={card}
-              userCard={userCard}
-              onView={onViewCard}
-              onEdit={onEditCard}
-            />
-          </motion.div>
-        );
-      })}
-    </motion.div>
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+      {cards.map((card) => (
+        <div key={card.id} className="h-full">
+          <Card
+            card={card}
+            onView={onViewCard ? () => onViewCard(card.id) : undefined}
+            onAdd={onAddCard ? () => onAddCard(card.id) : undefined}
+            showActions={showActions}
+          />
+        </div>
+      ))}
+    </div>
   );
 }

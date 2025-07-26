@@ -6,17 +6,20 @@ export interface LoginData {
 }
 
 export interface RegisterData {
-  username: string;
+  name: string;
   email: string;
   password: string;
 }
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  cards?: Card[];
+}
+
 export interface AuthResponse {
-  user: {
-    id: number;
-    username: string;
-    email: string;
-  };
+  user: User;
   token: string;
 }
 
@@ -26,18 +29,25 @@ export const authService = {
     return response.data;
   },
 
-  async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await api.post<AuthResponse>('/register', data);
+  async register(data: RegisterData): Promise<{ userId: string }> {
+    const response = await api.post<{ userId: string }>('/register', data);
     return response.data;
   },
 
-  async getMe(): Promise<AuthResponse['user']> {
-    const response = await api.get<AuthResponse['user']>('/me');
+  async getMe(): Promise<User> {
+    const response = await api.get<User>('/me');
     return response.data;
   },
 
   async logout(): Promise<void> {
-    // Limpa o token do localStorage
     localStorage.removeItem('auth');
   },
 };
+
+export interface Card {
+  id: string;
+  name: string;
+  description: string;
+  imageUrl: string;
+  createdAt: string;
+}

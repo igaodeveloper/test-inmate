@@ -1,79 +1,50 @@
 import { api } from './api';
 import { Card } from './cards';
 
+export interface TradeCard {
+  id: string;
+  cardId: string;
+  tradeId: string;
+  type: 'OFFERING' | 'RECEIVING';
+  card: Card;
+}
+
 export interface Trade {
-  id: number;
-  creatorId: number;
-  status: 'open' | 'pending' | 'completed' | 'cancelled';
-  description?: string;
+  id: string;
+  userId: string;
   createdAt: string;
-  updatedAt: string;
-  creator: {
-    id: number;
-    username: string;
-    email: string;
+  user: {
+    name: string;
   };
-  offeringCards: Card[];
-  receivingCards: Card[];
+  tradeCards: TradeCard[];
 }
 
-interface PaginatedResponse<T> {
-  data: T[];
-  meta: {
-    page: number;
-    rpp: number;
-    total: number;
-    totalPages: number;
-  };
+export interface TradesResponse {
+  list: Trade[];
+  rpp: number;
+  page: number;
+  more: boolean;
 }
 
-export interface CreateTradeData {
-  offeringCards: number[];
-  receivingCards: number[];
-  description?: string;
+export interface CreateTradeRequest {
+  cards: Array<{
+    cardId: string;
+    type: 'OFFERING' | 'RECEIVING';
+  }>;
 }
 
 export const tradesService = {
-  async getAllTrades(page: number = 1, rpp: number = 10) {
-    const response = await api.get<PaginatedResponse<Trade>>('/trades', {
-      params: { page, rpp },
-    });
+  async getAllTrades(params?: { rpp?: number; page?: number }): Promise<TradesResponse> {
+    const response = await api.get<TradesResponse>('/trades', { params });
     return response.data;
   },
 
-  async getUserTrades(page: number = 1, rpp: number = 10) {
-    const response = await api.get<PaginatedResponse<Trade>>('/me/trades', {
-      params: { page, rpp },
-    });
+  async createTrade(request: CreateTradeRequest): Promise<{ tradeId: string }> {
+    const response = await api.post<{ tradeId: string }>('/trades', request);
     return response.data;
   },
 
-  async getTradeById(id: number): Promise<Trade> {
-    const response = await api.get<Trade>(`/trades/${id}`);
-    return response.data;
-  },
-
-  async createTrade(data: CreateTradeData): Promise<Trade> {
-    const response = await api.post<Trade>('/trades', data);
-    return response.data;
-  },
-
-  async deleteTrade(id: number): Promise<void> {
-    await api.delete(`/trades/${id}`);
-  },
-
-  async cancelTrade(id: number): Promise<Trade> {
-    const response = await api.patch<Trade>(`/trades/${id}/cancel`);
-    return response.data;
-  },
-
-  async acceptTrade(id: number): Promise<Trade> {
-    const response = await api.post<Trade>(`/trades/${id}/accept`);
-    return response.data;
-  },
-
-  async rejectTrade(id: number): Promise<Trade> {
-    const response = await api.post<Trade>(`/trades/${id}/reject`);
-    return response.data;
+  async deleteTrade(tradeId: string): Promise<void> {
+    await api.delete(`/trades/${tradeId}`);
   },
 };
