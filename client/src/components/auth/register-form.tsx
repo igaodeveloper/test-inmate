@@ -29,8 +29,22 @@ export function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormProps) {
   });
 
   const onSubmit = async (data: RegisterData) => {
+    // Check if any required fields are empty
+    if (!data.username?.trim() || !data.email?.trim() || !data.password) {
+      toast({
+        title: t('auth.validationError'),
+        description: t('auth.fillAllRequiredFields'),
+        variant: 'destructive',
+      });
+      return;
+    }
+
     try {
-      await registerUser(data);
+      await registerUser({
+        name: data.username,
+        email: data.email,
+        password: data.password
+      });
       toast({
         title: t('auth.welcomeToCardEx'),
         description: t('auth.registrationSuccess'),
